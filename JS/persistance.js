@@ -1,4 +1,5 @@
 // persistance.js
+require("dotenv").config();
 const fs = require("fs/promises");
 const path = require("path");
 const BASE = __dirname;
@@ -11,6 +12,8 @@ let db;
 
 const DB_NAME = "ess";
 const CONFIG_FILE = path.join(__dirname, "../JSON/config.json");
+console.log("URI:", process.env.MONGO_URI);
+// ---------- Check for URI
 
 // const EMP_FILE = path.join(BASE, "../JSON/employees.json");
 // const SHIFT_FILE = path.join(BASE, "../JSON/shifts.json");
