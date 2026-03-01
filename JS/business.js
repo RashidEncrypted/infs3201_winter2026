@@ -60,81 +60,81 @@ async function addEmployee(name, phone) {
   return { ok: true, message: "Employee added. . ." };
 }
 
-/**
- * Assigns an employee to a shift while enforcing daily hour limits.
- * @param {string} employeeId
- * @param {string} shiftId
- * @returns {Promise<{ok:boolean, message:string}>}
- */
-async function assignShift(employeeId, shiftId) {
-  const employees = await db.getAllEmployees();
-  const shifts = await db.getAllShifts();
-  const assignments = await db.getAllAssignments();
-  const config = await db.getConfig();
+// /**
+//  * Assigns an employee to a shift while enforcing daily hour limits.
+//  * @param {string} employeeId
+//  * @param {string} shiftId
+//  * @returns {Promise<{ok:boolean, message:string}>}
+//  */
+// async function assignShift(employeeId, shiftId) {
+//   const employees = await db.getAllEmployees();
+//   const shifts = await db.getAllShifts();
+//   const assignments = await db.getAllAssignments();
+//   const config = await db.getConfig();
 
-  let employeeExists = false;
-  for (let i = 0; i < employees.length; i++) {
-    if (employees[i].employeeId === employeeId) {
-      employeeExists = true;
-      break;
-    }
-  }
+//   let employeeExists = false;
+//   for (let i = 0; i < employees.length; i++) {
+//     if (employees[i].employeeId === employeeId) {
+//       employeeExists = true;
+//       break;
+//     }
+//   }
 
-  let shift = null;
-  for (let i = 0; i < shifts.length; i++) {
-    if (shifts[i].shiftId === shiftId) {
-      shift = shifts[i];
-      break;
-    }
-  }
+//   let shift = null;
+//   for (let i = 0; i < shifts.length; i++) {
+//     if (shifts[i].shiftId === shiftId) {
+//       shift = shifts[i];
+//       break;
+//     }
+//   }
 
-  if (!employeeExists || !shift) {
-    return { ok: false, message: "Employee or shift does not exist." };
-  }
+//   if (!employeeExists || !shift) {
+//     return { ok: false, message: "Employee or shift does not exist." };
+//   }
 
-  for (let i = 0; i < assignments.length; i++) {
-    if (
-      assignments[i].employeeId === employeeId &&
-      assignments[i].shiftId === shiftId
-    ) {
-      return { ok: false, message: "This assignment already exists." };
-    }
-  }
+//   for (let i = 0; i < assignments.length; i++) {
+//     if (
+//       assignments[i].employeeId === employeeId &&
+//       assignments[i].shiftId === shiftId
+//     ) {
+//       return { ok: false, message: "This assignment already exists." };
+//     }
+//   }
 
-  let totalHours = 0;
-  for (let i = 0; i < assignments.length; i++) {
-    if (assignments[i].employeeId !== employeeId) continue;
+//   let totalHours = 0;
+//   for (let i = 0; i < assignments.length; i++) {
+//     if (assignments[i].employeeId !== employeeId) continue;
 
-    for (let j = 0; j < shifts.length; j++) {
-      if (
-        shifts[j].shiftId === assignments[i].shiftId &&
-        shifts[j].date === shift.date
-      ) {
-        totalHours += computeShiftDuration(
-          shifts[j].startTime,
-          shifts[j].endTime
-        );
-      }
-    }
-  }
+//     for (let j = 0; j < shifts.length; j++) {
+//       if (
+//         shifts[j].shiftId === assignments[i].shiftId &&
+//         shifts[j].date === shift.date
+//       ) {
+//         totalHours += computeShiftDuration(
+//           shifts[j].startTime,
+//           shifts[j].endTime
+//         );
+//       }
+//     }
+//   }
 
-  const newShiftHours = computeShiftDuration(
-    shift.startTime,
-    shift.endTime
-  );
+//   const newShiftHours = computeShiftDuration(
+//     shift.startTime,
+//     shift.endTime
+//   );
 
-  if (totalHours + newShiftHours > config.maxDailyHours) {
-    return {
-      ok: false,
-      message: "Cannot assign shift. Daily hour limit exceeded."
-    };
-  }
+//   if (totalHours + newShiftHours > config.maxDailyHours) {
+//     return {
+//       ok: false,
+//       message: "Cannot assign shift. Daily hour limit exceeded."
+//     };
+//   }
 
-  assignments.push({ employeeId, shiftId });
-  await db.saveAssignments(assignments);
+//   assignments.push({ employeeId, shiftId });
+//   await db.saveAssignments(assignments);
 
-  return { ok: true, message: "Employee assigned to shift. . ." };
-}
+//   return { ok: true, message: "Employee assigned to shift. . ." };
+// }
 
 /**
  * Returns the schedule for one employee.
@@ -185,7 +185,7 @@ async function viewSchedule(employeeId) {
 module.exports = {
   listEmployees,
   addEmployee,
-  assignShift,
+  // assignShift,
   viewSchedule,
   computeShiftDuration
 };
