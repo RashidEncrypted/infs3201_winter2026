@@ -3,9 +3,9 @@ const fs = require("fs/promises");
 const path = require("path");
 const BASE = __dirname;
 const { MongoClient } = require("mongodb");
+require("dotenv").config();
 
-const uri = "mongodb+srv://60301072_db_user:wwY5IVfeY9cVMYI4@infs3201winter2026.c3pvti5.mongodb.net/";
-
+const uri = process.env.MONGO_URI;
 const client = new MongoClient(uri);
 let db;
 
