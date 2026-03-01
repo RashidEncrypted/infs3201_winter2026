@@ -1,15 +1,32 @@
-<h1>Edit Employee</h1>
+<h1>Employee Details</h1>
 
-<form method="POST">
-  <p>
-    Name:<br>
-    <input type="text" name="name" value="{{name}}">
-  </p>
+<p>
+  Name: {{employeeName}} <br>
+  Phone: {{phone}}
+</p>
 
-  <p>
-    Phone:<br>
-    <input type="text" name="phone" value="{{phone}}">
-  </p>
+<p>
+  <a href="/edit/{{employeeId}}">Edit Details</a>
+</p>
 
-  <button type="submit">Save</button>
-</form>
+<h2>Shifts</h2>
+
+{{#if items.length}}
+  <table>
+    <tr>
+      <th>Date</th>
+      <th>Start Time</th>
+      <th>End Time</th>
+    </tr>
+
+    {{#each items}}
+      <tr>
+        <td>{{date}}</td>
+        <td>{{startTime}}</td>
+        <td>{{endTime}}</td>
+      </tr>
+    {{/each}}
+  </table>
+{{else}}
+  <p>No shifts assigned.</p>
+{{/if}}
