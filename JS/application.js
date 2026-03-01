@@ -11,7 +11,7 @@ const app = express();
 const PORT = 8000;
 
 // View engine setup
-app.engine("handlebars", exphbs.engine());
+app.engine("handlebars", exphbs.engine({ defaultLayout: false }));
 app.set("view engine", "handlebars");
 app.set("views", __dirname + "/views");
 
@@ -20,7 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 // Landing Page - List of Employees
 app.get("/", async (req, res) => {
   const employees = await bz.listEmployees();
-  res.render("home", { employees });
+  res.render("landingPage", { employees });
 });
 
 app.listen(PORT, () => {
