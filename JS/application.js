@@ -32,6 +32,28 @@ app.get("/", async (req, res) => {
   res.render("employeeDetails", result);
 });
 
+// Show Edit Form
+app.get("/edit/:id", async (req, res) => {
+  const employee = await bz.getEmployeeById(req.params.id);
+
+  if (!employee) {
+    return res.send("Employee not found.");
+  }
+
+  res.render("editEmployee", employee);
+});
+
+// Handle Edit Submission
+app.post("/edit/:id", async (req, res) => {
+  await bz.updateEmployee(
+    req.params.id,
+    req.body.name,
+    req.body.phone
+  );
+
+  res.redirect("/employee/" + req.params.id);
+});
+
 app.listen(PORT, () => {
   console.log(`Server running at http://127.0.0.1:${PORT}`);
 });

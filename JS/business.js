@@ -189,10 +189,39 @@ async function viewSchedule(employeeId) {
   };
 }
 
+async function getEmployeeById(employeeId) {
+  const employees = await db.getAllEmployees();
+
+  for (let i = 0; i < employees.length; i++) {
+    if (employees[i].employeeId === employeeId) {
+      return employees[i];
+    }
+  }
+
+  return null;
+}
+
+async function updateEmployee(employeeId, name, phone) {
+  const employees = await db.getAllEmployees();
+
+  for (let i = 0; i < employees.length; i++) {
+    if (employees[i].employeeId === employeeId) {
+      employees[i].name = name;
+      employees[i].phone = phone;
+      await db.saveEmployees(employees);
+      return true;
+    }
+  }
+
+  return false;
+}
+
 module.exports = {
   listEmployees,
   addEmployee,
   // assignShift,
   viewSchedule,
-  computeShiftDuration
+  computeShiftDuration,
+  getEmployeeById,
+  updateEmployee
 };
