@@ -38,7 +38,9 @@ console.log("URI:", process.env.MONGO_URI);
 async function connect() {
   if (!db) {
     await client.connect();
-    db = client.db(DB_NAME);
+    // db = client.db(DB_NAME);
+    // ---------- Confirmation of database name (not to be confused with the cluster name in the URI, only for testing purposes)
+    console.log("Connected to DB:", db.databaseName);
   }
   return db;
 }
