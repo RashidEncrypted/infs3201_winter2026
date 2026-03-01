@@ -23,6 +23,15 @@ app.get("/", async (req, res) => {
   res.render("landingPage", { employees });
 });
 
+// Employee Page - Employee Details
+  app.get("/employee/:id", async (req, res) => {
+  const result = await bz.viewSchedule(req.params.id);
+  if (!result.ok) {
+    return res.send(result.message);
+  }
+  res.render("employeeDetails", result);
+});
+
 app.listen(PORT, () => {
   console.log(`Server running at http://127.0.0.1:${PORT}`);
 });

@@ -147,9 +147,13 @@ async function viewSchedule(employeeId) {
   const assignments = await db.getAllAssignments();
 
   let employeeName = "";
+  let phone = "";
+
+  // Find employee
   for (let i = 0; i < employees.length; i++) {
     if (employees[i].employeeId === employeeId) {
       employeeName = employees[i].name;
+      phone = employees[i].phone;
       break;
     }
   }
@@ -159,6 +163,8 @@ async function viewSchedule(employeeId) {
   }
 
   const items = [];
+
+  // Build shift list
   for (let i = 0; i < assignments.length; i++) {
     if (assignments[i].employeeId === employeeId) {
       for (let j = 0; j < shifts.length; j++) {
@@ -176,8 +182,9 @@ async function viewSchedule(employeeId) {
 
   return {
     ok: true,
-    message: items.length === 0 ? "No shifts assigned." : "OK",
+    employeeId,
     employeeName,
+    phone,
     items
   };
 }
