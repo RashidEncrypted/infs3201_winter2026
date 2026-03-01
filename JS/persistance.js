@@ -2,65 +2,93 @@
 const fs = require("fs/promises");
 const path = require("path");
 const BASE = __dirname;
+const { MongoClient } = require("mongodb");
 
-const EMP_FILE = path.join(BASE, "../JSON/employees.json");
-const SHIFT_FILE = path.join(BASE, "../JSON/shifts.json");
-const ASSIGN_FILE = path.join(BASE, "../JSON/assignments.json");
-const CONFIG_FILE = path.join(BASE, "../JSON/config.json");
+const uri = "mongodb+srv://60301072_db_user:wwY5IVfeY9cVMYI4@infs3201winter2026.c3pvti5.mongodb.net/";
+
+const client = new MongoClient(uri);
+let db;
+
+const DB_NAME = "ess";
+const CONFIG_FILE = path.join(__dirname, "../JSON/config.json");
+
+// const EMP_FILE = path.join(BASE, "../JSON/employees.json");
+// const SHIFT_FILE = path.join(BASE, "../JSON/shifts.json");
+// const ASSIGN_FILE = path.join(BASE, "../JSON/assignments.json");
+// const CONFIG_FILE = path.join(BASE, "../JSON/config.json");
+// ---------- The following functions are used to interact with the MongoDB database. They replace the previous file-based persistence methods.
+
+// ---------- MongoDB connection testing
+// (async () => {
+//   try {
+//     await connect();
+//     console.log("MongoDB Connected");
+//     process.exit(0);
+//   } catch (err) {
+//     console.error("Connection Failed:", err);
+//     process.exit(1);
+//   }
+// })();
 
 /**
- * @param {string} filename
- * @param {any} defaultValue
  * @returns {Promise<any>}
  */
-async function loadFile(filename, defaultValue) {
-  try {
-    const rawData = await fs.readFile(filename, "utf8");
-    return JSON.parse(rawData);
-  } catch (err) {
-    return defaultValue;
+async function connect() {
+  if (!db) {
+    await client.connect();
+    db = client.db(DB_NAME);
   }
-}
-
-/**
- * @param {string} filename
- * @param {any} data
- * @returns {Promise<void>}
- */
-async function saveFile(filename, data) {
-  await fs.writeFile(filename, JSON.stringify(data, null, 2));
+  return db;
 }
 
 /** @returns {Promise<Array>} */
 async function getAllEmployees() {
-  return await loadFile(EMP_FILE, []);
+  const database = await connect();
+  return await database.collection("employees").find({}).toArray();
 }
 
 /** @param {Array} employees @returns {Promise<void>} */
 async function saveEmployees(employees) {
-  await saveFile(EMP_FILE, employees);
+  const database = await connect();
+  const col = database.collection("employees");
+  await col.deleteMany({});
+  if (employees.length > 0) {
+    await col.insertMany(employees);
+  }
 }
 
 /** @returns {Promise<Array>} */
 async function getAllShifts() {
-  return await loadFile(SHIFT_FILE, []);
+  const database = await connect();
+  return await database.collection("shifts").find({}).toArray();
 }
 
 /** @returns {Promise<Array>} */
 async function getAllAssignments() {
-  return await loadFile(ASSIGN_FILE, []);
+  const database = await connect();
+  return await database.collection("assignments").find({}).toArray();
 }
 
 /** @param {Array} assignments @returns {Promise<void>} */
 async function saveAssignments(assignments) {
-  return await saveFile(ASSIGN_FILE, assignments);
+  const database = await connect();
+  const col = database.collection("assignments");
+  await col.deleteMany({});
+  if (assignments.length > 0) {
+    await col.insertMany(assignments);
+  }
 }
 
 /** @returns {Promise<{maxDailyHours:number}>} */
 async function getConfig() {
-  const config = await loadFile(CONFIG_FILE, { maxDailyHours: 9 });
-  if (!config.maxDailyHours) config.maxDailyHours = 9;
-  return config;
+  try {
+    const rawData = await fs.readFile(CONFIG_FILE, "utf8");
+    const config = JSON.parse(rawData);
+    if (!config.maxDailyHours) config.maxDailyHours = 9;
+    return config;
+  } catch (err) {
+    return { maxDailyHours: 9 };
+  }
 }
 
 module.exports = {
