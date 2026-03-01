@@ -6,9 +6,8 @@ const bz = require("./business");
 function appMenu() {
   console.log("\n1. Show all employees");
   console.log("2. Add new employee");
-  console.log("3. Assign employee to shift");
-  console.log("4. View employee schedule");
-  console.log("5. Exit");
+  console.log("3. View employee schedule");
+  console.log("4. Exit");
 }
 
 async function showEmployeesUI() {
@@ -45,13 +44,13 @@ async function addEmployeeUI() {
   console.log(result.message);
 }
 
-async function assignShiftUI() {
-  const employeeId = prompt("Enter employee ID (E###): ").trim();
-  const shiftId = prompt("Enter shift ID (S###): ").trim();
+// async function assignShiftUI() {
+//   const employeeId = prompt("Enter employee ID (E###): ").trim();
+//   const shiftId = prompt("Enter shift ID (S###): ").trim();
 
-  const result = await bz.assignShift(employeeId, shiftId);
-  console.log(result.message);
-}
+//   const result = await bz.assignShift(employeeId, shiftId);
+//   console.log(result.message);
+// }
 
 async function viewScheduleUI() {
   const employeeId = prompt("Enter employee ID (E###): ").trim();
@@ -78,7 +77,7 @@ async function viewScheduleUI() {
 
 async function main() {
   let choice = "";
-  while (choice !== "5") {
+  while (choice !== "4") {
     appMenu();
     choice = prompt("What is your choice> ");
 
@@ -90,12 +89,9 @@ async function main() {
         await addEmployeeUI();
         break;
       case "3":
-        await assignShiftUI();
-        break;
-      case "4":
         await viewScheduleUI();
         break;
-      case "5":
+      case "4":
         console.log("Exiting application.");
         break;
       default:
