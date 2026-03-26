@@ -1,0 +1,36 @@
+A4 Refactor Plan
+
+1. Collections to Change
+- The assignments collection will be removed.
+- The shifts collection will now store a list of employee ObjectIds inside it.
+- The employees collection stays the same, but employeeId will no longer be used as the main key.
+
+2. Persistence Layer Changes
+- Remove getAllAssignments() & saveAssignments()
+- Update getAllShifts() to include the employee array.
+- Add logic to add/remove employees inside the shift’s employee list.
+
+3. Business Logic Changes
+- viewSchedule() will:
+  - Loop through all shifts
+  - Check if the employee’s ObjectId exists in the shift’s employee list
+- assignShift() (if used) will:
+  - Add the employee ObjectId directly into the shift
+
+4. Embedded Array Impact
+- Instead of using a separate assignments collection, employees will be stored inside shifts.
+- Updating data means editing arrays inside shift documents.
+- Must make sure no duplicate employee ObjectIds are added.
+
+5. Risks / Complications
+- Need to correctly convert employeeId to ObjectId during migration
+- Must correctly move existing assignment data
+- Possible duplicates in shift employee lists
+- Old logic may break if not fully updated
+- Must compare ObjectIds correctly
+
+6. Migration Plan
+- Load employees, shifts, and assignments
+- Convert employeeId values to ObjectIds
+- Add employees into the correct shifts
+- Stop using the assignments collection after migration
