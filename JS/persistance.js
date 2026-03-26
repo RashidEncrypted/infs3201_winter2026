@@ -67,20 +67,34 @@ async function getAllShifts() {
   return await database.collection("shifts").find({}).toArray();
 }
 
-/** @returns {Promise<Array>} */
-async function getAllAssignments() {
+// /** @returns {Promise<Array>} */
+// async function getAllAssignments() {
+//   const database = await connect();
+//   return await database.collection("assignments").find({}).toArray();
+// }
+
+// /** @param {Array} assignments @returns {Promise<void>} */
+// async function saveAssignments(assignments) {
+//   const database = await connect();
+//   const col = database.collection("assignments");
+//   await col.deleteMany({});
+//   if (assignments.length > 0) {
+//     await col.insertMany(assignments);
+//   }
+// }
+
+async function saveShifts(shifts) {
   const database = await connect();
-  return await database.collection("assignments").find({}).toArray();
+  const col = database.collection("shifts");
+  await col.deleteMany({});
+  if (shifts.length > 0) {
+    await col.insertMany(shifts);
+  }
 }
 
-/** @param {Array} assignments @returns {Promise<void>} */
-async function saveAssignments(assignments) {
+async function getEmployeeByMongoId(employeeObjectId) {
   const database = await connect();
-  const col = database.collection("assignments");
-  await col.deleteMany({});
-  if (assignments.length > 0) {
-    await col.insertMany(assignments);
-  }
+  return await database.collection("employees").findOne({ _id: employeeObjectId });
 }
 
 /** @returns {Promise<{maxDailyHours:number}>} */
@@ -99,7 +113,6 @@ module.exports = {
   getAllEmployees,
   saveEmployees,
   getAllShifts,
-  getAllAssignments,
-  saveAssignments,
+  saveShifts,
   getConfig
 };
