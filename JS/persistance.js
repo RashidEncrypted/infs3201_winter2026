@@ -51,6 +51,16 @@ async function getAllEmployees() {
   return await database.collection("employees").find({}).toArray();
 }
 
+async function getUserByUsername(username) {
+  const database = await connect();
+  return await database.collection("users").findOne({ username: username });
+}
+
+async function addSecurityLog(entry) {
+  const database = await connect();
+  await database.collection("security_log").insertOne(entry);
+}
+
 /** @param {Array} employees @returns {Promise<void>} */
 async function saveEmployees(employees) {
   const database = await connect();
@@ -111,6 +121,8 @@ async function getConfig() {
 
 module.exports = {
   getAllEmployees,
+  getUserByUsername,
+  addSecurityLog,
   saveEmployees,
   getAllShifts,
   saveShifts,
