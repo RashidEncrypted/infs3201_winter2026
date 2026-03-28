@@ -135,6 +135,7 @@ async function viewSchedule(employeeId) {
     }
 
     if (found) {
+      const hour = Number(shifts[i].startTime.split(":")[0]);
       items.push({
         date: shifts[i].date,
         startTime: shifts[i].startTime,
@@ -149,6 +150,7 @@ async function viewSchedule(employeeId) {
     _id: String(employee._id),
     employeeName: employee.name,
     phone: employee.phone,
+    photo: employee.photo,
     items
   };
 }
