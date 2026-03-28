@@ -138,7 +138,8 @@ async function viewSchedule(employeeId) {
       items.push({
         date: shifts[i].date,
         startTime: shifts[i].startTime,
-        endTime: shifts[i].endTime
+        endTime: shifts[i].endTime,
+        isMorning: hour < 12
       });
     }
   }
