@@ -76,12 +76,16 @@ app.post("/login", async (req, res) => {
   const password = req.body.password;
 
   const user = await db.getUserByUsername(username);
+  // console.log("username entered:", username);
+  // console.log("user found:", user); // temp just to check if user is being found in DB
 
   if (!user) {
     return res.redirect("/login?message=Invalid username or password");
   }
 
   const hashed = auth.hashPassword(password);
+  // console.log("hashed entered password:", hashed);
+  // console.log("stored password:", user ? user.password : "no user"); // temp just to check if password is being hashed correctly and matches stored hash
 
   if (hashed !== user.password) {
     return res.redirect("/login?message=Invalid username or password");
