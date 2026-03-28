@@ -16,6 +16,83 @@ app.set("view engine", "handlebars");
 app.set("views", __dirname + "/views");
 
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
+app.use(async (req, res, next) => {
+  let username = "unknown";
+
+  if (req.cookies.sid) {
+    auth.removeExpiredSessions();
+
+    const session = auth.getSession(req.cookies.sid);
+    if (session) {
+      username = session.username;
+    }
+  }
+
+  await db.addSecurityLog({
+    timestamp: new Date(),
+    username: username,
+    url: req.originalUrl,
+    method: req.method
+  });
+
+  next();
+});
+
+app.use((req, res, next) => {
+  if (req.path === "/login" || req.path === "/logout") {
+    return next();
+  }
+
+  auth.removeExpiredSessions();
+
+  const sid = req.cookies.sid;
+
+  if (!sid) {
+    return res.redirect("/login?message=Please login first");
+  }
+
+  const session = auth.getSession(sid);
+
+  if (!session) {
+    res.clearCookie("sid");
+    return res.redirect("/login?message=Session expired. Please login again");
+  }
+
+  auth.extendSession(session);
+  next();
+});
+
+app.get("/login", (req, res) => {
+  res.render("login", { message: req.query.message });
+});
+
+app.post("/login", async (req, res) => {
+  const username = req.body.username;
+  const password = req.body.password;
+
+  const user = await db.getUserByUsername(username);
+
+  if (!user) {
+    return res.redirect("/login?message=Invalid username or password");
+  }
+
+  const hashed = auth.hashPassword(password);
+
+  if (hashed !== user.password) {
+    return res.redirect("/login?message=Invalid username or password");
+  }
+
+  const sid = auth.createSession(username);
+
+  res.cookie("sid", sid, {
+    maxAge: 5 * 60 * 1000,
+    httpOnly: true
+  });
+
+  res.redirect("/");
+});
 
 // Landing Page - List of Employees
 app.get("/", async (req, res) => {
@@ -52,6 +129,17 @@ app.post("/edit/:id", async (req, res) => {
   );
 
   res.redirect("/employee/" + req.params.id);
+});
+
+app.get("/logout", (req, res) => {
+  const sid = req.cookies.sid;
+
+  if (sid) {
+    auth.deleteSession(sid);
+  }
+
+  res.clearCookie("sid");
+  res.redirect("/login?message=Logged out successfully");
 });
 
 app.listen(PORT, () => {
