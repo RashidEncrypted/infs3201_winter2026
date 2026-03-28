@@ -47,7 +47,7 @@ async function addEmployee(name, phone) {
     phone: phone
   };
 
-  // ^^ employeeId should be removed and MongoDB _id should be used instead
+  // ^^ employeeId removed and MongoDB _id should be used instead
 
   employees.push(newEmployee);
   await db.saveEmployees(employees);
@@ -145,7 +145,7 @@ async function viewSchedule(employeeId) {
 
   return {
     ok: true,
-    employeeId: String(employee._id),
+    _id: String(employee._id),
     employeeName: employee.name,
     phone: employee.phone,
     items

@@ -29,7 +29,7 @@ async function showEmployeesUI() {
 
   for (let i = 0; i < employees.length; i++) {
     console.log(
-      employees[i].employeeId.padEnd(12) +
+      String(employees[i]._id).padEnd(12) +
         employees[i].name.padEnd(maxNameLength + 4) +
         employees[i].phone
     );
