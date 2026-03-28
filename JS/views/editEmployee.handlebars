@@ -1,13 +1,40 @@
+<style>
+  p{
+    font-size: 18px;
+  }
+
+  input {
+    padding: 6px;
+    margin-top: 5px;
+    width: 200px;
+  }
+
+  .save-btn {
+    text-decoration: none;
+    color: white;
+    background-color: #0077cc;
+    padding: 8px 14px;
+    border-radius: 6px;
+    border: none;
+  }
+
+  .save-btn:hover {
+    background-color: #005fa3;
+  }
+</style>
+
 <h1>Edit Employee</h1>
 
 <form method="POST" action="/edit/{{_id}}">
   <p>
-    Name: <input type="text" name="name" value="{{name}}">
+    Name:<br>
+    <input type="text" name="name" value="{{name}}">
   </p>
 
   <p>
-    Phone: <input type="text" name="phone" value="{{phone}}">
+    Phone:<br>
+    <input type="text" name="phone" value="{{phone}}">
   </p>
 
-  <button type="submit">Save</button>
+  <button class="save-btn" type="submit">Save</button>
 </form>

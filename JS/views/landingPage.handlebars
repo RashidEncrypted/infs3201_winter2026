@@ -1,10 +1,39 @@
+<style>
+  p{
+    font-size: 18px;
+  }
+
+  .list-box {
+    width: 300px;
+    border: 1px solid #d6d6d6;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .employee-link {
+    display: block;
+    text-decoration: none;
+    color: black;
+    padding: 12px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .employee-link:hover {
+  background-color: #0077cc;
+  color: white;
+}
+
+  .employee-link:last-child {
+    border-bottom: none;
+  }
+</style>
+
 <h1>List of Employees</h1>
-<ul>
+
+<div class="list-box">
   {{#each employees}}
-    <li>
-      <a href="/employee/{{_id}}">
-        {{name}}
-      </a>
-    </li>
+    <a class="employee-link" href="/employee/{{_id}}">
+      {{name}}
+    </a>
   {{/each}}
-</ul>
+</div>

@@ -1,20 +1,49 @@
 <style>
-.morning {
-  background-color: yellow;
-}
+  .morning {
+    background-color: yellow;
+  }
+
+  p{
+    font-size: 18px;
+  }
+
+  .edit-link {
+    display: inline-block;
+    text-decoration: none;
+    color: white;
+    background-color: #0077cc;
+    padding: 8px 14px;
+    border-radius: 6px;
+  }
+
+  table {
+    width: 20%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+
+  th, td {
+    border: 1px solid #d6d6d6;
+    padding: 10px;
+    text-align: left;
+  }
+
+  th {
+    background-color: #f2f2f2;
+  }
 </style>
 
 <h1>Employee Details</h1>
+
+<img src="{{photo}}" width="150">
 
 <p>
   Name: {{employeeName}} <br>
   Phone: {{phone}}
 </p>
 
-<img src="{{photo}}" width="150">
-
 <p>
-  <a href="/edit/{{_id}}">Edit Details</a>
+  <a class="edit-link" href="/edit/{{_id}}">Edit Details</a>
 </p>
 
 <h2>Shifts</h2>
