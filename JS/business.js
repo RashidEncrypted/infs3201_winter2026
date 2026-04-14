@@ -182,6 +182,22 @@ async function updateEmployee(employeeId, name, phone) {
   return false;
 }
 
+async function canUploadDocument(employeeId) {
+  const employees = await db.getAllEmployees();
+
+  for (let i = 0; i < employees.length; i++) {
+    if (String(employees[i]._id) === String(employeeId)) {
+      if (!employees[i].documents) {
+        return true;
+      }
+
+      return employees[i].documents.length < 5;
+    }
+  }
+
+  return false;
+}
+
 module.exports = {
   listEmployees,
   addEmployee,
@@ -189,5 +205,6 @@ module.exports = {
   viewSchedule,
   computeShiftDuration,
   getEmployeeById,
-  updateEmployee
+  updateEmployee,
+  canUploadDocument
 };

@@ -56,6 +56,14 @@ async function getUserByUsername(username) {
   return await database.collection("users").findOne({ username: username });
 }
 
+async function addEmployeeDocument(employeeId, documentInfo) {
+  const database = await connect();
+  await database.collection("employees").updateOne(
+    { _id: employeeId },
+    { $push: { documents: documentInfo } }
+  );
+}
+
 async function addSecurityLog(entry) {
   const database = await connect();
   await database.collection("security_log").insertOne(entry);
@@ -102,10 +110,10 @@ async function saveShifts(shifts) {
   }
 }
 
-async function getEmployeeByMongoId(employeeObjectId) {
-  const database = await connect();
-  return await database.collection("employees").findOne({ _id: employeeObjectId });
-}
+// async function getEmployeeByMongoId(employeeObjectId) {
+//   const database = await connect();
+//   return await database.collection("employees").findOne({ _id: employeeObjectId });
+// }
 
 /** @returns {Promise<{maxDailyHours:number}>} */
 async function getConfig() {
@@ -146,6 +154,7 @@ async function resetUserFailedAttempts(username) {
 module.exports = {
   getAllEmployees,
   getUserByUsername,
+  addEmployeeDocument,
   addSecurityLog,
   saveEmployees,
   getAllShifts,
