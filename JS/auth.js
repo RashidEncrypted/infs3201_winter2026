@@ -1,6 +1,7 @@
 const crypto = require("crypto");
 
 const sessions = [];
+const twoFACodes = [];
 
 /**
  * @param {string} password
@@ -76,11 +77,59 @@ function removeExpiredSessions() {
   }
 }
 
+function generate2FACode(username) {
+  const code = Math.floor(100000 + Math.random() * 900000).toString();
+
+  const expiresAt = Date.now() + 3 * 60 * 1000; // 3 minutes
+
+  twoFACodes.push({
+    username: username,
+    code: code,
+    expiresAt: expiresAt
+  });
+
+  return code;
+}
+
+function verify2FACode(username, code) {
+  for (let i = 0; i < twoFACodes.length; i++) {
+    if (
+      twoFACodes[i].username === username &&
+      twoFACodes[i].code === code
+    ) {
+      if (twoFACodes[i].expiresAt < Date.now()) {
+        twoFACodes.splice(i, 1);
+        return false;
+      }
+
+      twoFACodes.splice(i, 1);
+      return true;
+    }
+  }
+
+  return false;
+}
+
+function removeExpired2FACodes() {
+  let i = 0;
+
+  while (i < twoFACodes.length) {
+    if (twoFACodes[i].expiresAt < Date.now()) {
+      twoFACodes.splice(i, 1);
+    } else {
+      i++;
+    }
+  }
+}
+
 module.exports = {
   hashPassword,
   createSession,
   getSession,
   deleteSession,
   extendSession,
-  removeExpiredSessions
+  removeExpiredSessions,
+  generate2FACode,
+  verify2FACode,
+  removeExpired2FACodes
 };
