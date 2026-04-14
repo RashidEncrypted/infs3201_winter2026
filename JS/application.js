@@ -45,7 +45,11 @@ app.use(async (req, res, next) => {
 });
 
 app.use((req, res, next) => {
-  if (req.path === "/login" || req.path === "/logout") {
+  if (
+  req.path === "/login"  ||
+  req.path === "/logout" ||
+  req.path === "/twofa"
+  ) {
     return next();
   }
 
@@ -114,6 +118,43 @@ app.post("/login", async (req, res) => {
   }
 
   await db.resetUserFailedAttempts(username);
+
+  auth.removeExpired2FACodes();
+  const code = auth.generate2FACode(username);
+
+  emailSystem.sendEmail(
+    user.email,
+    "Your 2FA Code",
+    "Your 2FA code is: " + code
+  );
+
+  res.render("twoFA", {
+    username: username,
+    message: "A 2FA code has been sent to your email."
+  });
+});
+
+app.get("/twofa", (req, res) => {
+  res.render("twoFA", {
+    username: req.query.username,
+    message: req.query.message
+  });
+});
+
+app.post("/twofa", async (req, res) => {
+  const username = req.body.username;
+  const code = req.body.code;
+
+  auth.removeExpired2FACodes();
+
+  const valid = auth.verify2FACode(username, code);
+
+  if (!valid) {
+    return res.render("twoFA", {
+      username: username,
+      message: "Invalid or expired 2FA code"
+    });
+  }
 
   const sid = auth.createSession(username);
 

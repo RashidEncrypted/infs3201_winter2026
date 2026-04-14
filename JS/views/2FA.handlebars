@@ -1,0 +1,17 @@
+<h1>Two-Factor Authentication</h1>
+
+{{#if message}}
+  <p>{{message}}</p>
+{{/if}}
+
+<form method="POST" action="/twofa">
+  <p>
+    Username: <input type="text" name="username" value="{{username}}" readonly>
+  </p>
+
+  <p>
+    2FA Code: <input type="text" name="code">
+  </p>
+
+  <button type="submit">Verify</button>
+</form>
