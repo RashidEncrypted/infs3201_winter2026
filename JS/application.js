@@ -181,6 +181,8 @@ app.get("/employee/:id", async (req, res) => {
   if (!result.ok) {
     return res.send(result.message);
   }
+
+  result.message = req.query.message;
   res.render("employeeDetails", result);
 });
 
@@ -204,6 +206,43 @@ app.post("/edit/:id", async (req, res) => {
   );
 
   res.redirect("/employee/" + req.params.id);
+});
+
+app.post("/employee/:id/upload", (req, res) => {
+  upload.single("document")(req, res, async function (err) {
+    if (err) {
+      return res.redirect(
+        "/employee/" + req.params.id + "?message=" + encodeURIComponent(err.message)
+      );
+    }
+
+    const allowed = await bz.canUploadDocument(req.params.id);
+
+    if (!allowed) {
+      return res.redirect(
+        "/employee/" + req.params.id + "?message=" + encodeURIComponent("Maximum 5 documents allowed")
+      );
+    }
+
+    if (!req.file) {
+      return res.redirect(
+        "/employee/" + req.params.id + "?message=" + encodeURIComponent("Please select a PDF file")
+      );
+    }
+
+    await db.addEmployeeDocument(
+      new ObjectId(req.params.id),
+      {
+        originalName: req.file.originalname,
+        storedName: req.file.filename,
+        uploadedAt: new Date()
+      }
+    );
+
+    res.redirect(
+      "/employee/" + req.params.id + "?message=" + encodeURIComponent("Document uploaded successfully")
+    );
+  });
 });
 
 app.get("/logout", (req, res) => {

@@ -151,6 +151,7 @@ async function viewSchedule(employeeId) {
     employeeName: employee.name,
     phone: employee.phone,
     photo: employee.photo,
+    documents: employee.documents || [],
     items
   };
 }
