@@ -111,6 +111,13 @@ app.post("/login", async (req, res) => {
         "There have been 3 invalid login attempts on your account."
       );
     }
+    if (attempts === 9) {
+      emailSystem.sendEmail(
+        user.email,
+        "Account Warning",
+        "There have been 9 invalid login attempts. One more attempt will lock your account."
+      );
+}
 
     if (attempts >= 10) {
       await db.lockUserAccount(username);

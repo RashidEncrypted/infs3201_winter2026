@@ -19,13 +19,27 @@
   }
 
   .employee-link:hover {
-  background-color: #0077cc;
-  color: white;
-}
+    background-color: #0077cc;
+    color: white;
+  }
 
   .employee-link:last-child {
     border-bottom: none;
   }
+  .logout-btn {
+    display: inline-block;
+    text-decoration: none;
+    color: white;
+    background-color: #cc0000;
+    padding: 8px 14px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+  }
+
+  .logout-btn:hover {
+    background-color: #990000;
+  }
+
 </style>
 
 <h1>List of Employees</h1>
@@ -37,3 +51,7 @@
     </a>
   {{/each}}
 </div>
+
+<br>
+
+<a class="logout-btn" href="/logout">Logout</a>
