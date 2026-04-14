@@ -1,3 +1,19 @@
+<style>
+  .login-btn {
+  display: inline-block;
+  text-decoration: none;
+  color: white;
+  background-color: #0077cc;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.login-btn:hover {
+  background-color: #005fa3;
+}
+</style>
 <h1>Login</h1>
 
 {{#if message}}
@@ -13,5 +29,5 @@
     Password: <input type="password" name="password">
   </p>
 
-  <button type="submit">Login</button>
+  <button type="submit" class="login-btn">Login</button>
 </form>

@@ -1,3 +1,19 @@
+<style>
+  .login-btn {
+  display: inline-block;
+  text-decoration: none;
+  color: white;
+  background-color: #0077cc;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.login-btn:hover {
+  background-color: #005fa3;
+}
+</style>
 <h1>Two-Factor Authentication</h1>
 
 {{#if message}}
@@ -10,8 +26,8 @@
   </p>
 
   <p>
-    2FA Code: <input type="text" name="code">
+    2FA Code: <input type="text" name="code" maxlength="6" placeholder="Enter 6-digit code" required>
   </p>
 
-  <button type="submit">Verify</button>
+  <button type="submit" class="login-btn">Verify</button>
 </form>
