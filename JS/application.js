@@ -245,6 +245,17 @@ app.post("/employee/:id/upload", (req, res) => {
   });
 });
 
+app.get("/employee/:id/document/:filename", (req, res) => {
+  const filePath = path.join(
+    __dirname,
+    "uploads",
+    "employeeDocs",
+    req.params.filename
+  );
+
+  res.sendFile(filePath);
+});
+
 app.get("/logout", (req, res) => {
   const sid = req.cookies.sid;
 

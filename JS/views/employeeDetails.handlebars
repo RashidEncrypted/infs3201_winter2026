@@ -65,7 +65,11 @@
 {{#if documents.length}}
   <ul>
     {{#each documents}}
-      <li>{{originalName}}</li>
+      <li>
+        <a href="/employee/{{../_id}}/document/{{storedName}}">
+        {{originalName}}
+        </a>
+</li>
     {{/each}}
   </ul>
 {{else}}
