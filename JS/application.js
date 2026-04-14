@@ -9,6 +9,7 @@ const cookieParser = require("cookie-parser");
 const bz = require("./business");
 const db = require("./persistance");
 const auth = require("./auth");
+const emailSystem = require("./emailSystem");
 
 const app = express();
 const PORT = 8000;
@@ -76,20 +77,43 @@ app.post("/login", async (req, res) => {
   const password = req.body.password;
 
   const user = await db.getUserByUsername(username);
-  // console.log("username entered:", username);
-  // console.log("user found:", user); // temp just to check if user is being found in DB
 
   if (!user) {
     return res.redirect("/login?message=Invalid username or password");
   }
 
+  if (user.isLocked) {
+    return res.redirect("/login?message=Account is locked");
+  }
+
   const hashed = auth.hashPassword(password);
-  // console.log("hashed entered password:", hashed);
-  // console.log("stored password:", user ? user.password : "no user"); // temp just to check if password is being hashed correctly and matches stored hash
 
   if (hashed !== user.password) {
+    let attempts = 1;
+
+    if (user.failedLoginAttempts) {
+      attempts = user.failedLoginAttempts + 1;
+    }
+
+    await db.updateUserFailedAttempts(username, attempts);
+
+    if (attempts === 3) {
+      emailSystem.sendEmail(
+        user.email,
+        "Suspicious Activity Detected",
+        "There have been 3 invalid login attempts on your account."
+      );
+    }
+
+    if (attempts >= 10) {
+      await db.lockUserAccount(username);
+      return res.redirect("/login?message=Account is locked");
+    }
+
     return res.redirect("/login?message=Invalid username or password");
   }
+
+  await db.resetUserFailedAttempts(username);
 
   const sid = auth.createSession(username);
 
@@ -108,7 +132,7 @@ app.get("/", async (req, res) => {
 });
 
 // Employee Page - Employee Details
-  app.get("/employee/:id", async (req, res) => {
+app.get("/employee/:id", async (req, res) => {
   const result = await bz.viewSchedule(req.params.id);
   if (!result.ok) {
     return res.send(result.message);

@@ -119,6 +119,30 @@ async function getConfig() {
   }
 }
 
+async function updateUserFailedAttempts(username, attempts) {
+  const database = await connect();
+  await database.collection("users").updateOne(
+    { username: username },
+    { $set: { failedLoginAttempts: attempts } }
+  );
+}
+
+async function lockUserAccount(username) {
+  const database = await connect();
+  await database.collection("users").updateOne(
+    { username: username },
+    { $set: { isLocked: true } }
+  );
+}
+
+async function resetUserFailedAttempts(username) {
+  const database = await connect();
+  await database.collection("users").updateOne(
+    { username: username },
+    { $set: { failedLoginAttempts: 0 } }
+  );
+}
+
 module.exports = {
   getAllEmployees,
   getUserByUsername,
@@ -126,5 +150,8 @@ module.exports = {
   saveEmployees,
   getAllShifts,
   saveShifts,
-  getConfig
+  getConfig,
+  updateUserFailedAttempts,
+  lockUserAccount,
+  resetUserFailedAttempts
 };
